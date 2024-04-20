@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "dist",
     "noEmitOnError": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "noUnusedParameters": true
   }
 }

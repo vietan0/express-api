@@ -1,5 +1,5 @@
 {
-  "name": "vanilla",
+  "name": "express-api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,8 +8,14 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsx watch src",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "prettier": "prettier . --write",
     "start": "node dist/src",
-    "test": "vitest"
+    "test": "vitest",
+    "test:once": "vitest run",
+    "type": "tsc --noEmit",
+    "prepare": "husky",
+    "check": "npm-run-all -p type lint prettier test:once"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +30,9 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.2.2",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@stylistic/eslint-plugin": "^1.7.2",
     "@tsconfig/node20": "^20.1.4",
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.21",
@@ -31,6 +40,14 @@
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.12.7",
     "@types/supertest": "^6.0.2",
+    "@typescript-eslint/eslint-plugin": "^7.7.0",
+    "@typescript-eslint/parser": "^7.1.1",
+    "eslint": "^8.56.0",
+    "eslint-plugin-simple-import-sort": "^12.1.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "npm-run-all": "^4.1.5",
+    "prettier": "3.2.5",
     "prisma": "^5.12.1",
     "supertest": "^6.3.4",
     "tsx": "^4.7.2",
