@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { body } from 'express-validator';
-import { handleInputErrors } from './modules/middlewares.js';
+
 import {
   createProduct,
   deleteProduct,
@@ -15,6 +15,7 @@ import {
   getUpdates,
   updateUpdate,
 } from './handlers/update.js';
+import { handleInputErrors } from './modules/middlewares.js';
 
 const router = Router();
 
@@ -49,8 +50,9 @@ router
       body('productId').isString(),
     ],
     handleInputErrors,
-    createUpdate
+    createUpdate,
   );
+
 router
   .route('/update/:id')
   .get(getUpdateById)
@@ -63,7 +65,7 @@ router
       body('asset').optional(),
     ],
     handleInputErrors,
-    updateUpdate
+    updateUpdate,
   )
   .delete(deleteUpdate);
 
@@ -72,25 +74,28 @@ router
  */
 router.get('/updatepoint', () => {});
 router.get('/updatepoint/:id', () => {});
+
 router.put(
   '/updatepoint/:id',
   body('name').optional(),
   body('description').optional(),
   handleInputErrors,
-  (req, res) => {
+  (_req, res) => {
     res.json({ message: 'no errors!' });
-  }
+  },
 );
+
 router.post(
   '/updatepoint',
   body('name').exists(),
   body('description').exists(),
   body('updateId').exists(),
   handleInputErrors,
-  (req, res) => {
+  (_req, res) => {
     res.json({ message: 'no errors!' });
-  }
+  },
 );
+
 router.delete('/updatepoint/:id', () => {});
 
 export default router;

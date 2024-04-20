@@ -1,7 +1,8 @@
-import { RequestHandler } from 'express';
-import prisma from '../db.js';
-import { ParamsDictionary as PD } from 'express-serve-static-core';
 import { Prisma, Update } from '@prisma/client';
+import { RequestHandler } from 'express';
+import { ParamsDictionary as PD } from 'express-serve-static-core';
+
+import prisma from '../db.js';
 
 export const getUpdates: RequestHandler = async (req, res) => {
   // right now it's getting ALL updates of ALL products of ONE user
@@ -13,12 +14,14 @@ export const getUpdates: RequestHandler = async (req, res) => {
       updates: true,
     },
   });
+
   const updates = products.map((p) => p.updates).flat();
   res.json({ data: updates });
 };
+
 export const getUpdateById: RequestHandler<Pick<Update, 'id'>> = async (
   req,
-  res
+  res,
 ) => {
   const update = await prisma.update.findUnique({
     where: {
@@ -28,11 +31,13 @@ export const getUpdateById: RequestHandler<Pick<Update, 'id'>> = async (
       _count: true,
     },
   });
+
   res.json({ data: update });
 };
+
 export const createUpdate: RequestHandler<
   PD,
-  any,
+  unknown,
   Prisma.UpdateUncheckedCreateInput
 > = async (req, res) => {
   // make sure newUpdate belongs to a product that belongs to user
@@ -42,6 +47,7 @@ export const createUpdate: RequestHandler<
       belongsToId: req.user!.id,
     },
   });
+
   if (product === null) {
     res.status(400).json({ message: `You don't have any product like this.` });
   }
@@ -49,11 +55,13 @@ export const createUpdate: RequestHandler<
   const newUpdate = await prisma.update.create({
     data: req.body,
   });
+
   res.json({ data: newUpdate });
 };
+
 export const updateUpdate: RequestHandler<
   Pick<Update, 'id'>,
-  any,
+  unknown,
   Prisma.UpdateUpdateInput
 > = async (req, res) => {
   // make sure req.body has at least 1 field
@@ -68,10 +76,13 @@ export const updateUpdate: RequestHandler<
     },
     select: { updates: true },
   });
+
   const updates = products.map((p) => p.updates).flat();
+
   if (updates === null || updates.length === 0) {
     res.status(400).json({ message: `You don't have any updates` });
   }
+
   if (updates.find((u) => u.id === req.params.id) === undefined) {
     res.status(400).json({ message: `You don't have any update with this id` });
   }
@@ -82,11 +93,13 @@ export const updateUpdate: RequestHandler<
     },
     data: req.body,
   });
+
   res.json({ data: updatedUpdate });
 };
+
 export const deleteUpdate: RequestHandler<Pick<Update, 'id'>> = async (
   req,
-  res
+  res,
 ) => {
   // make sure req.body has at least 1 field
   if (Object.keys(req.body).length === 0) {
@@ -100,10 +113,13 @@ export const deleteUpdate: RequestHandler<Pick<Update, 'id'>> = async (
     },
     select: { updates: true },
   });
+
   const updates = products.map((p) => p.updates).flat();
+
   if (updates === null || updates.length === 0) {
     res.status(400).json({ message: `You don't have any updates` });
   }
+
   if (updates.find((u) => u.id === req.params.id) === undefined) {
     res.status(400).json({ message: `You don't have any update with this id` });
   }
@@ -113,6 +129,7 @@ export const deleteUpdate: RequestHandler<Pick<Update, 'id'>> = async (
       id: req.params.id,
     },
   });
+
   res.json({ data: deletedUpdate });
 };
 
@@ -129,5 +146,6 @@ export const getEverythingFromUser: RequestHandler = async (req, res) => {
       },
     },
   });
+
   res.json({ data: user });
 };

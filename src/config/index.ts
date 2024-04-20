@@ -1,6 +1,5 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 const stage = process.env.STAGE || 'local';
-
 let envConfig;
 
 if (stage === 'production') {
@@ -21,6 +20,7 @@ const defaultConfig = {
     jwt: process.env.JWT_SECRET,
   },
 };
+
 const config = {
   ...defaultConfig,
   ...envConfig,

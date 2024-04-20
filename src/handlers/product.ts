@@ -1,8 +1,8 @@
+import { Prisma, Product } from '@prisma/client';
 import { RequestHandler } from 'express';
 import { ParamsDictionary as PD } from 'express-serve-static-core';
 
 import prisma from '../db.js';
-import { Prisma, Product } from '@prisma/client';
 
 export const getProducts: RequestHandler = async (req, res) => {
   const products = await prisma.user.findUnique({
@@ -13,12 +13,13 @@ export const getProducts: RequestHandler = async (req, res) => {
       products: true,
     },
   });
+
   res.json({ data: products });
 };
 
 export const getProductById: RequestHandler<Pick<Product, 'id'>> = async (
   req,
-  res
+  res,
 ) => {
   const product = await prisma.product.findUnique({
     where: {
@@ -26,13 +27,14 @@ export const getProductById: RequestHandler<Pick<Product, 'id'>> = async (
       belongsToId: req.user!.id,
     },
   });
+
   console.log(req.body);
   res.json({ data: product });
 };
 
 export const createProduct: RequestHandler<
   PD,
-  any,
+  unknown,
   Prisma.ProductCreateInput
 > = async (req, res, next) => {
   try {
@@ -55,7 +57,7 @@ export const createProduct: RequestHandler<
 
 export const updateProduct: RequestHandler<
   Pick<Product, 'id'>,
-  any,
+  unknown,
   Prisma.ProductUpdateInput
 > = async (req, res) => {
   const updated = await prisma.product.update({
@@ -65,12 +67,13 @@ export const updateProduct: RequestHandler<
     },
     data: req.body,
   });
+
   res.json({ data: updated });
 };
 
 export const deleteProduct: RequestHandler<Pick<Product, 'id'>> = async (
   req,
-  res
+  res,
 ) => {
   const deleted = await prisma.product.delete({
     where: {
@@ -78,5 +81,6 @@ export const deleteProduct: RequestHandler<Pick<Product, 'id'>> = async (
       belongsToId: req.user!.id,
     },
   });
+
   res.json({ data: deleted });
 };

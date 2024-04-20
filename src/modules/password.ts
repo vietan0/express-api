@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt';
+
 export function comparePasswords(
   plainPassword: string,
-  hashedPasswordInDb: string
+  hashedPasswordInDb: string,
 ) {
   return bcrypt.compare(plainPassword, hashedPasswordInDb);
 }
