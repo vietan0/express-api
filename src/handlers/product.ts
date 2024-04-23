@@ -2,7 +2,7 @@ import { Prisma, Product } from '@prisma/client';
 import { RequestHandler } from 'express';
 import { ParamsDictionary as PD } from 'express-serve-static-core';
 
-import prisma from '../db.js';
+import prisma from '../db/client.js';
 
 export const getProducts: RequestHandler = async (req, res) => {
   const products = await prisma.user.findUnique({
@@ -28,7 +28,6 @@ export const getProductById: RequestHandler<Pick<Product, 'id'>> = async (
     },
   });
 
-  console.log(req.body);
   res.json({ data: product });
 };
 

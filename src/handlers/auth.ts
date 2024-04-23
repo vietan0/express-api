@@ -2,24 +2,19 @@ import { Prisma, User } from '@prisma/client';
 import { RequestHandler } from 'express';
 import { ParamsDictionary as PD } from 'express-serve-static-core';
 
-import prisma from '../db.js';
+import prisma from '../db/client.js';
 import { createToken } from '../modules/auth.js';
 import { comparePasswords, hashPassword } from '../modules/password.js';
 
-export const createUser: RequestHandler<
+export const signUp: RequestHandler<
   PD,
   unknown,
   Prisma.UserCreateInput
 > = async (req, res, next) => {
   try {
     const user = await prisma.user.create({
-      data: {
-        ...req.body,
-        password: await hashPassword(req.body.password),
-      },
+      data: { ...req.body, password: await hashPassword(req.body.password) },
     });
-
-    console.log('prisma created');
 
     const token = createToken(user);
     res.json({ token });

@@ -2,7 +2,7 @@ import { Prisma, Update } from '@prisma/client';
 import { RequestHandler } from 'express';
 import { ParamsDictionary as PD } from 'express-serve-static-core';
 
-import prisma from '../db.js';
+import prisma from '../db/client.js';
 
 export const getUpdates: RequestHandler = async (req, res) => {
   // right now it's getting ALL updates of ALL products of ONE user
@@ -66,7 +66,7 @@ export const updateUpdate: RequestHandler<
 > = async (req, res) => {
   // make sure req.body has at least 1 field
   if (Object.keys(req.body).length === 0) {
-    res.status(400).json({ message: 'Have to specify an update field' });
+    return res.status(400).json({ message: 'Have to specify an update field' });
   }
 
   // make sure update being updated belong to user
@@ -80,11 +80,13 @@ export const updateUpdate: RequestHandler<
   const updates = products.map((p) => p.updates).flat();
 
   if (updates === null || updates.length === 0) {
-    res.status(400).json({ message: `You don't have any updates` });
+    return res.status(400).json({ message: `You don't have any updates` });
   }
 
   if (updates.find((u) => u.id === req.params.id) === undefined) {
-    res.status(400).json({ message: `You don't have any update with this id` });
+    return res
+      .status(400)
+      .json({ message: `You don't have any update with this id` });
   }
 
   const updatedUpdate = await prisma.update.update({
@@ -101,12 +103,7 @@ export const deleteUpdate: RequestHandler<Pick<Update, 'id'>> = async (
   req,
   res,
 ) => {
-  // make sure req.body has at least 1 field
-  if (Object.keys(req.body).length === 0) {
-    res.status(400).json({ message: 'Have to specify an update field' });
-  }
-
-  // make sure update being updated belongs to product that belongs to user
+  // make sure update being deleted belongs to product that belongs to user
   const products = await prisma.product.findMany({
     where: {
       belongsToId: req.user!.id,
@@ -117,11 +114,13 @@ export const deleteUpdate: RequestHandler<Pick<Update, 'id'>> = async (
   const updates = products.map((p) => p.updates).flat();
 
   if (updates === null || updates.length === 0) {
-    res.status(400).json({ message: `You don't have any updates` });
+    return res.status(400).json({ message: `You don't have any updates` });
   }
 
   if (updates.find((u) => u.id === req.params.id) === undefined) {
-    res.status(400).json({ message: `You don't have any update with this id` });
+    return res
+      .status(400)
+      .json({ message: `You don't have any update with this id` });
   }
 
   const deletedUpdate = await prisma.update.delete({
